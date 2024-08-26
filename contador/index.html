@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador de Questões</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyBVoAK-m5LWf3ZZj5abpcFE8Q7E2iZLEKQ",
+          authDomain: "contador-de-atividades.firebaseapp.com",
+          projectId: "contador-de-atividades",
+          storageBucket: "contador-de-atividades.appspot.com",
+          messagingSenderId: "125083198172",
+          appId: "1:125083198172:web:ebbe5691fded87d6828a19"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        function loadData(subject) {
+            const subjectRef = ref(database, 'questions/' + subject);
+            get(subjectRef).then((snapshot) => {
+                const count = snapshot.val() ? snapshot.val().count : 0;
+                document.getElementById(`${subject}-count`).textContent = count;
+            });
+        }
+
+        function loadAllData() {
+            const subjects = ['matematica', 'portugues', 'historia', 'geografia', 'filosofia', 'fisica', 'quimica', 'biologia'];
+            subjects.forEach(subject => loadData(subject));
+        }
+
+        window.onload = loadAllData;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Contador de Questões</h1>
+
+        <div class="subject">
+            <span>Matemática</span>
+            <button onclick="incrementCounter('matematica')">+</button>
+            <span id="matematica-count">0</span>
+            <button onclick="decrementCounter('matematica')">-</button>
+        </div>
+
+        <div class="subject">
+            <span>Português</span>
+            <button onclick="incrementCounter('portugues')">+</button>
+            <span id="portugues-count">0</span>
+            <button onclick="decrementCounter('portugues')">-</button>
+        </div>
+
+        <div class="subject">
+            <span>História</span>
+            <button onclick="incrementCounter('historia')">+</button>
+            <span id="historia-count">0</span>
+            <button onclick="decrementCounter('historia')">-</button>
+        </div>
+
+        <div class="subject">
+            <span>Geografia</span>
+            <button onclick="incrementCounter('geografia')">+</button>
+            <span id="geografia-count">0</span>
+            <button onclick="decrementCounter('geografia')">-</button>
+        </div>
+
+        <div class="subject">
+            <span>Filosofia</span>
+            <button onclick="incrementCounter('filosofia')">+</button>
+            <span id="filosofia-count">0</span>
+            <button onclick="decrementCounter('filosofia')">-</button>
+        </div>
+
+        <div class="subject">
+            <span>Física</span>
+            <button onclick="incrementCounter('fisica')">+</button>
+            <span id="fisica-count">0</span>
+            <button onclick="decrementCounter('fisica')">-</button>
+        </div>
+
+        <div class="subject">
+            <span>Química</span>
+            <button onclick="incrementCounter('quimica')">+</button>
+            <span id="quimica-count">0</span>
+            <button onclick="decrementCounter('quimica')">-</button>
+        </div>
+
+        <div class="subject">
+            <span>Biologia</span>
+            <button onclick="incrementCounter('biologia')">+</button>
+            <span id="biologia-count">0</span>
+            <button onclick="decrementCounter('biologia')">-</button>
+        </div>
+
+        <div class="totals">
+            <div class="total">
+                <h2>Total do Dia: <span id="daily-count">0</span></h2>
+            </div>
+            <div class="total">
+                <h2>Total Geral: <span id="total-count">0</span></h2>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let totalQuestions = 0;
+        let dailyQuestions = 0;
+
+        function incrementCounter(subject) {
+            const countElement = document.getElementById(`${subject}-count`);
+            let count = parseInt(countElement.textContent) || 0;
+            count++;
+
+            countElement.textContent = count;
+
+            totalQuestions++;
+            dailyQuestions++;
+
+            document.getElementById('total-count').textContent = totalQuestions;
+            document.getElementById('daily-count').textContent = dailyQuestions;
+        }
+
+        function decrementCounter(subject) {
+            const countElement = document.getElementById(`${subject}-count`);
+            let count = parseInt(countElement.textContent) || 0;
+
+            if (count > 0) {
+                count--;
+
+                countElement.textContent = count;
+
+                totalQuestions--;
+                dailyQuestions--;
+
+                document.getElementById('total-count').textContent = totalQuestions;
+                document.getElementById('daily-count').textContent = dailyQuestions;
+            }
+        }
+
+        // Função para resetar o contador diário no final do dia
+        function resetDailyCounter() {
+            dailyQuestions = 0;
+            document.getElementById('daily-count').textContent = dailyQuestions;
+        }
+
+        // Exemplo: Reseta o contador diário às 23:59 todos os dias
+        setInterval(() => {
+            const now = new Date();
+            if (now.getHours() === 23 && now.getMinutes() === 59) {
+                resetDailyCounter();
+            }
+        }, 60000); // Verifica a cada minuto
+    </script>
+</body>
+</html>
